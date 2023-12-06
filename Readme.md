@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Анна Миронова](https://up.htmlacademy.ru/ecmascript/22/user/1439495).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/spearance).
 
 ---
 
