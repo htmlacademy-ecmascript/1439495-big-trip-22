@@ -26,10 +26,5 @@ function generateOffers() {
   }
   return mockOffers;
 }
-/*
-function getRandomCheckedOfferId(eventType) {
-  const offers = mockOffers.find((offer) => offer.type === eventType);
-  return getRandomArrayElement(offers).id;
-}*/
 
 export {generateOffers};
