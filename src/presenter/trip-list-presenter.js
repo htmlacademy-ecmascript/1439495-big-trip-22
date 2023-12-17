@@ -3,7 +3,7 @@ import SortView from '../view/sort-view.js';
 import ListView from '../view/list-view.js';
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 
 export default class TripListPresenter {
   tripListComponent = new ListView();
@@ -22,11 +22,11 @@ export default class TripListPresenter {
     render(new SortView(), this.listContainer);
     render(this.tripListComponent, this.listContainer);
 
-    render(new EditPointView({point: this.eventsList[0], offers: this.offersList}), this.tripListComponent.getElement());
+    render(new EditPointView({point: this.eventsList[0], offers: this.offersList}), this.tripListComponent.element);
 
     for (let i = 1; i < this.eventsList.length; i++) {
       const offersForEvent = this.offersList.find((offer) => offer.type === this.eventsList[i].type);
-      render(new PointView({point: this.eventsList[i], offers: offersForEvent}), this.tripListComponent.getElement());
+      render(new PointView({point: this.eventsList[i], offers: offersForEvent}), this.tripListComponent.element);
     }
   }
 }

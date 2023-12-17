@@ -1,5 +1,5 @@
 import { EVENT_TYPES } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate } from '../utils.js';
 
 function createEditPointFormTemplate(point, allOffers) {
@@ -99,24 +99,14 @@ function createEditPointFormTemplate(point, allOffers) {
   );
 }
 
-export default class EditPointView {
+export default class EditPointView extends AbstractView {
   constructor({point, offers}) {
+    super();
     this.point = point;
     this.offers = offers;
   }
 
-  getTemplate() {
+  get template() {
     return createEditPointFormTemplate(this.point, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
