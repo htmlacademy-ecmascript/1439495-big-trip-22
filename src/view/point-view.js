@@ -1,8 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, calculateDuration } from '../utils.js';
 
-function createPointTemplate(point, allOffers, destination) {
-  const {price, dateFrom, dateTo, isFavorite, offers, type} = point;
+function createPointTemplate(point, allOffers, destinations) {
+  const {price, dateFrom, dateTo, isFavorite, destination, offers, type} = point;
+
+  const offersForEventType = allOffers.find((offer) => offer.type === type);
+  const destinationInfo = destinations.find((dest) => dest.id === destination);
 
   return (
     `<li class="trip-events__item">
@@ -11,7 +14,7 @@ function createPointTemplate(point, allOffers, destination) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${destinationInfo.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="2019-03-18T10:30">${formatDate(dateFrom)}</time>
@@ -25,7 +28,7 @@ function createPointTemplate(point, allOffers, destination) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${allOffers.offers.map((offer) => {
+          ${offersForEventType.offers.map((offer) => {
       if (offers.includes(offer.id)) {
         return (`<li class="event__offer">
                 <span class="event__offer-title">${offer.title}</span>
@@ -50,14 +53,26 @@ function createPointTemplate(point, allOffers, destination) {
 }
 
 export default class PointView extends AbstractView {
-  constructor({point, offers, destination}) {
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #handleEditBtnClick = null;
+
+  constructor({point, offers, destinations, onEditBtnClick}) {
     super();
-    this.point = point;
-    this.offers = offers;
-    this.destination = destination;
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#handleEditBtnClick = onEditBtnClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   }
 
   get template() {
-    return createPointTemplate(this.point, this.offers, this.destination);
+    return createPointTemplate(this.#point, this.#offers, this.#destinations);
   }
+
+  #editClickHandler = () => {
+    this.#handleEditBtnClick();
+  };
 }

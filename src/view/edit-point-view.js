@@ -102,14 +102,35 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
 }
 
 export default class EditPointView extends AbstractView {
-  constructor({point, offers, destinations}) {
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #handleFormSubmit = null;
+  #handleFormReset = null;
+
+  constructor({point, offers, destinations, onFormSubmit, onFormReset}) {
     super();
-    this.point = point;
-    this.offers = offers;
-    this.destinations = destinations;
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormReset = onFormReset;
+
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('form').addEventListener('reset', this.#formResetHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
   }
 
   get template() {
-    return createEditPointFormTemplate(this.point, this.offers, this.destinations);
+    return createEditPointFormTemplate(this.#point, this.#offers, this.#destinations);
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
+
+  #formResetHandler = () => {
+    this.#handleFormReset();
+  };
 }
