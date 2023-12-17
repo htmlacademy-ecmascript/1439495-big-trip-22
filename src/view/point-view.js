@@ -1,8 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate, calculateDuration } from '../utils.js';
 
-function createPointTemplate(point, allOffers) {
-  const {price, dateFrom, dateTo, destination, isFavorite, offers, type} = point;
+function createPointTemplate(point, allOffers, destination) {
+  const {price, dateFrom, dateTo, isFavorite, offers, type} = point;
 
   return (
     `<li class="trip-events__item">
@@ -18,7 +18,7 @@ function createPointTemplate(point, allOffers) {
             &mdash;
             <time class="event__end-time" datetime="2019-03-18T11:00">${formatDate(dateTo)}</time>
           </p>
-          <p class="event__duration">${calculateDuration(dateFrom, dateTo)}D</p>
+          <p class="event__duration">${calculateDuration(dateFrom, dateTo)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -50,13 +50,14 @@ function createPointTemplate(point, allOffers) {
 }
 
 export default class PointView extends AbstractView {
-  constructor({point, offers}) {
+  constructor({point, offers, destination}) {
     super();
     this.point = point;
     this.offers = offers;
+    this.destination = destination;
   }
 
   get template() {
-    return createPointTemplate(this.point, this.offers);
+    return createPointTemplate(this.point, this.offers, this.destination);
   }
 }
