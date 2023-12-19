@@ -6,4 +6,11 @@ const DateFormats = {
   FULL_DATE: 'DD/MM/YY HH:mm'
 };
 
-export {EVENT_TYPES, DateFormats};
+const FilterTypes = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+export {EVENT_TYPES, DateFormats, FilterTypes};
