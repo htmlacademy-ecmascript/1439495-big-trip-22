@@ -23,7 +23,7 @@ export default class TripListPresenter {
     this.offersList = [...this.#eventsModel.offers];
     this.destinationsList = [...this.#eventsModel.destinations];
 
-    render(new FilterView(), this.#filterContainer);
+    render(new FilterView({points: this.eventsList}), this.#filterContainer);
 
     if (this.eventsList.length === 0) {
       render(new EmptyListView(), this.#listContainer);
