@@ -44,4 +44,8 @@ function updateItem(items, newItem) {
   return items.map((item) => item.id === newItem.id ? newItem : item);
 }
 
-export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, updateItem};
+function isEscapeKey(evt) {
+  return evt.key === 'Escape';
+}
+
+export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, updateItem, isEscapeKey};
