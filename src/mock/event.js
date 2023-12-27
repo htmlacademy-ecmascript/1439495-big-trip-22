@@ -6,7 +6,7 @@ const mockEvents = [
   {
     id: 1,
     price: 1100,
-    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateFrom: '2019-07-03T22:55:56.845Z',
     dateTo: '2019-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
@@ -18,8 +18,8 @@ const mockEvents = [
   {
     id: 2,
     price: 2000,
-    dateFrom: '2023-07-10T22:55:56.845Z',
-    dateTo: '2023-08-11T11:25:13.375Z',
+    dateFrom: '2023-07-02T22:55:56.845Z',
+    dateTo: '2023-08-01T11:25:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
@@ -54,7 +54,7 @@ const mockEvents = [
   {
     id: 5,
     price: 1300,
-    dateFrom: '2023-07-10T22:55:56.845Z',
+    dateFrom: '2023-07-07T22:55:56.845Z',
     dateTo: '2023-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
@@ -78,8 +78,8 @@ const mockEvents = [
   {
     id: 7,
     price: 8500,
-    dateFrom: '2023-07-18T22:55:56.845Z',
-    dateTo: '2024-01-11T11:22:13.375Z',
+    dateFrom: '2023-07-18T10:55:56.845Z',
+    dateTo: '2023-07-18T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
@@ -90,8 +90,8 @@ const mockEvents = [
   {
     id: 8,
     price: 600,
-    dateFrom: '2020-07-10T22:55:56.845Z',
-    dateTo: '2021-07-11T11:22:13.375Z',
+    dateFrom: '2020-07-09T22:55:56.845Z',
+    dateTo: '2020-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
@@ -114,7 +114,7 @@ const mockEvents = [
   {
     id: 10,
     price: 50,
-    dateFrom: '2023-10-10T22:55:56.845Z',
+    dateFrom: '2023-10-09T22:55:56.845Z',
     dateTo: '2023-11-11T10:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
@@ -125,7 +125,7 @@ const mockEvents = [
     id: 11,
     price: 680,
     dateFrom: '2021-10-10T22:55:56.845Z',
-    dateTo: '2022-01-01T11:22:13.375Z',
+    dateTo: '2021-10-15T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
