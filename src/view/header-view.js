@@ -2,11 +2,14 @@ import AbstractView from '../framework/view/abstract-view';
 import { formatDate } from '../utils.js';
 import { DateFormats } from '../const.js';
 
+const MAX_DESTINATIONS_TO_RENDER = 3;
+
 function createHeaderTemplate({totalPrice, destinationNames, points}) {
+  const destinations = Array.from(new Set(destinationNames));
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">${destinationNames}</h1>
+        <h1 class="trip-info__title">${destinations.length > MAX_DESTINATIONS_TO_RENDER ? `${destinations[0]} &mdash;...&mdash; ${destinations[destinations.length - 1]}` : destinations.join(' &mdash; ')}</h1>
         <p class="trip-info__dates">${formatDate(points[0].dateFrom, DateFormats.TOTAL_MONTH)}&nbsp;&mdash;&nbsp;${formatDate(points[points.length - 1].dateTo, DateFormats.TOTAL_MONTH)}</p>
       </div>
       <p class="trip-info__cost">
@@ -39,7 +42,7 @@ export default class HeaderView extends AbstractView {
   }
 
   #getDestinationNames() {
-    return this.#points.map((point) => this.#destinations.find((dest) => dest.id === point.destination).name).join(' &mdash; ');
+    return this.#points.map((point) => this.#destinations.find((dest) => dest.id === point.destination).name);
   }
 }
 
