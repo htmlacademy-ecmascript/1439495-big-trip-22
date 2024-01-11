@@ -147,7 +147,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this._state);
   };
 
   #formResetHandler = () => {
@@ -174,6 +174,10 @@ export default class EditPointView extends AbstractStatefulView {
       price: evt.target.value
     });
   };
+
+  reset(point) {
+    this.updateElement(point);
+  }
 
   _restoreHandlers() {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
