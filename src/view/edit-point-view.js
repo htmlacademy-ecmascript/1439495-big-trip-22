@@ -25,11 +25,12 @@ function createAvaliableOffersTemplate(pointTypeOffers, offers) {
       `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox  visually-hidden"
-          id="event-offer-luggage-${offer.id}"
+          id="event-offer-${offer.title}-${offer.id}"
           type="checkbox"
-          name="event-offer-luggage"
+          name="event-offer-${offer.title}"
+          data-id="${offer.id}"
           ${offers.includes(offer.id) ? 'checked' : ''}>
-        <label class="event__offer-label" for="event-offer-luggage-${offer.id}">
+        <label class="event__offer-label" for="event-offer-${offer.title}-${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offer.price}</span>
@@ -157,7 +158,16 @@ export default class EditPointView extends AbstractStatefulView {
   #pointTypeChangeHandler = (evt) => {
     if (evt.target.closest('input')) {
       this.updateElement({
-        type: evt.target.value
+        type: evt.target.value,
+        offers: []
+      });
+    }
+  };
+
+  #offersChangeHandler = (evt) => {
+    if (evt.target.checked) {
+      this._setState({
+        offers: [...this._state.offers, parseInt(evt.target.dataset.id, 10)]
       });
     }
   };
@@ -184,6 +194,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('reset', this.#formResetHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
     this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
   }
