@@ -4,7 +4,7 @@ import ListView from '../view/list-view.js';
 import { render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from './point-presenter.js';
-import { sort } from '../utils.js';
+import { filter, sort } from '../utils.js';
 import { SortTypes, UpdateType, UserAction } from '../const.js';
 
 export default class TripListPresenter {
@@ -14,21 +14,25 @@ export default class TripListPresenter {
   #eventsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #filterModel = null;
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
 
-  constructor(listContainer, filterContainer, eventsModel, offersModel, destinationsModel) {
+  constructor(listContainer, filterContainer, eventsModel, offersModel, destinationsModel, filterModel) {
     this.#listContainer = listContainer;
     this.#filterContainer = filterContainer;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#filterModel = filterModel;
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
-    return this.#eventsModel.events;
+    const filteredEvents = filter[this.#filterModel.filter](this.#eventsModel.events);
+    return filteredEvents;
     // в примере сразу возвращают отсортированные задачи
   }
 
@@ -41,10 +45,6 @@ export default class TripListPresenter {
   }
 
   init() {
-    //this.eventsList = [...this.#eventsModel.events];
-    //this.offersList = [...this.#offersModel.offers];
-    //this.destinationsList = [...this.#destinationsModel.destinations];
-
     this.#renderFilters();
 
     if (this.events.length === 0) {
@@ -56,7 +56,11 @@ export default class TripListPresenter {
   }
 
   #renderFilters() {
-    render(new FilterView({points: this.events}), this.#filterContainer);
+    render(new FilterView({
+      points: this.events,
+      currentFilter: this.#filterModel.filter,
+      onFilterChange: this.#handleFilterChange,
+    }), this.#filterContainer);
   }
 
   #renderSortList() {
@@ -117,6 +121,10 @@ export default class TripListPresenter {
         this.#renderPointsBoard();
         break;
     }
+  };
+
+  #handleFilterChange = (filterType) => {
+    this.#filterModel.setFilter(UpdateType.MINOR, filterType);
   };
 
   #handlePointChange = (updatedPoint) => {
