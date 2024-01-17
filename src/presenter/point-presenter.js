@@ -2,6 +2,7 @@ import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils.js';
+import { UpdateType, UserAction } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -105,11 +106,13 @@ export default class PointPresenter {
   };
 
   #favoriteBtnClickHandler = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    //this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_EVENT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
   };
 
   #editFormSubmitHandler = (point) => {
-    this.#handleDataChange(point);
+    //this.#handleDataChange(point);
+    this.#handleDataChange(UserAction.UPDATE_EVENT, UpdateType.MINOR, point);
     this.#replaceEditFormToPoint();
     document.removeEventListener('keydown', this.#escapeKeydownHandler);
   };
