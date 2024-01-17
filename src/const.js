@@ -14,6 +14,13 @@ const FilterTypes = {
   PAST: 'past'
 };
 
+const NoEventsTexts = {
+  [FilterTypes.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterTypes.FUTURE]: 'There are no future events now',
+  [FilterTypes.PAST]: 'There are no past events now',
+  [FilterTypes.PRESENT]: 'There are no present events now'
+};
+
 const SortTypes = {
   DAY: 'day',
   EVENT: 'event',
@@ -34,4 +41,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType};
+export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts};

@@ -37,6 +37,9 @@ export default class HeaderPresenter {
     if (this.#headerComponent) {
       remove(this.#headerComponent);
     }
+    if (this.events.length === 0) {
+      return;
+    }
     this.#headerComponent = new HeaderView({
       points: sort[SortTypes.DAY](this.events),
       destinations: this.destinations
