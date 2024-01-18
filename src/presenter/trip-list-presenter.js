@@ -4,13 +4,17 @@ import { remove, render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from './point-presenter.js';
 import { filter, sort } from '../utils.js';
-import { NoEventsTexts, SortTypes, UpdateType, UserAction } from '../const.js';
+import { FilterTypes, NoEventsTexts, SortTypes, UpdateType, UserAction } from '../const.js';
+import NewEventBtnView from '../view/new-event-btn-view.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 export default class TripListPresenter {
   #tripListComponent = new ListView();
   #noEventsComponent = null;
   #sortComponent = null;
+  #addBtnComponent = null;
   #listContainer = null;
+  #btnContainer = null;
   #eventsModel = null;
   #offersModel = null;
   #destinationsModel = null;
@@ -18,8 +22,9 @@ export default class TripListPresenter {
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
 
-  constructor(listContainer, eventsModel, offersModel, destinationsModel, filterModel) {
+  constructor(listContainer, buttonContainer, eventsModel, offersModel, destinationsModel, filterModel) {
     this.#listContainer = listContainer;
+    this.#btnContainer = buttonContainer;
     this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
@@ -31,6 +36,7 @@ export default class TripListPresenter {
 
   get events() {
     const filteredEvents = filter[this.#filterModel.filter](this.#eventsModel.events);
+    sort[this.#currentSortType](filteredEvents);
     return filteredEvents;
   }
 
@@ -43,27 +49,20 @@ export default class TripListPresenter {
   }
 
   init() {
+    this.#addBtnComponent = new NewEventBtnView({onBtnClick: this.#handleAddPointBtnClick});
+    render(this.#addBtnComponent, this.#btnContainer);
     this.#renderFullPointsBoard();
   }
 
   #renderSortList() {
-    if (this.#sortComponent) {
-      remove(this.#sortComponent);
-    }
     this.#sortComponent = new SortView({onSortChange: this.#handleSortChange, currentSortType: this.#currentSortType});
     render(this.#sortComponent, this.#listContainer);
   }
 
   #renderFullPointsBoard() {
     if (this.events.length === 0) {
-      if (this.#sortComponent) {
-        remove(this.#sortComponent);
-      }
       this.#renderNoEventsComponent();
       return;
-    }
-    if (this.#noEventsComponent) {
-      remove(this.#noEventsComponent);
     }
     this.#renderSortList();
     this.#renderPoints();
@@ -71,18 +70,20 @@ export default class TripListPresenter {
 
   #renderPoints() {
     render(this.#tripListComponent, this.#listContainer);
-    sort[this.#currentSortType](this.events);
     for (let i = 0; i < this.events.length; i++) {
       this.#renderPoint(this.events[i]);
     }
   }
 
   #renderNoEventsComponent() {
-    if (this.#noEventsComponent) {
-      remove(this.#noEventsComponent);
-    }
     this.#noEventsComponent = new EmptyListView({text: NoEventsTexts[this.#filterModel.filter]});
     render(this.#noEventsComponent, this.#listContainer);
+  }
+
+  #clearFullBoard() {
+    remove(this.#noEventsComponent);
+    remove(this.#sortComponent);
+    this.#clearPointsBoard();
   }
 
   #clearPointsBoard() {
@@ -121,11 +122,11 @@ export default class TripListPresenter {
         this.#pointPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearPointsBoard();
+        this.#clearFullBoard();
         this.#renderFullPointsBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearPointsBoard();
+        this.#clearFullBoard();
         this.#renderFullPointsBoard();
         break;
     }
@@ -144,6 +145,24 @@ export default class TripListPresenter {
       this.#clearPointsBoard();
       this.#renderPoints();
     }
+  };
+
+  #handleAddPointBtnClick = () => {
+    this.#addBtnComponent.element.disabled = true;
+    const newPointPresenter = new NewPointPresenter({
+      container: this.#tripListComponent.element,
+      offers: this.offers,
+      destinations: this.destinations,
+      onDataChange: this.#handleViewAction,
+      onResetForm: this.#handleNewEventFormClose
+    });
+    this.#currentSortType = SortTypes.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+    newPointPresenter.init();
+  };
+
+  #handleNewEventFormClose = () => {
+    this.#addBtnComponent.element.disabled = false;
   };
 
 }

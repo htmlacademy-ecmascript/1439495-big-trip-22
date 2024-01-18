@@ -107,7 +107,6 @@ export default class PointPresenter {
   };
 
   #favoriteBtnClickHandler = () => {
-    //this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
     this.#handleDataChange(UserAction.UPDATE_EVENT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
   };
 
@@ -116,7 +115,6 @@ export default class PointPresenter {
   };
 
   #editFormSubmitHandler = (point) => {
-    //this.#handleDataChange(point);
     this.#handleDataChange(UserAction.UPDATE_EVENT, UpdateType.MINOR, point);
     this.#replaceEditFormToPoint();
     document.removeEventListener('keydown', this.#escapeKeydownHandler);

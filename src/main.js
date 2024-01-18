@@ -15,7 +15,7 @@ const offersModel = new OffersModel();
 const destinationsModel = new DestinationsModel();
 const filterModel = new FilterModel();
 
-const tripListPresenter = new TripListPresenter(contentContainerElement, eventsModel, offersModel, destinationsModel, filterModel);
+const tripListPresenter = new TripListPresenter(contentContainerElement, headerContainerElement, eventsModel, offersModel, destinationsModel, filterModel);
 const headerPresenter = new HeaderPresenter(headerContainerElement, eventsModel, destinationsModel);
 const filterPresenter = new FilterPresenter(filterContainerElement, eventsModel, filterModel);
 
