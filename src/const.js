@@ -39,6 +39,15 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
-export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts};
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT'
+};
+
+const AUTHORIZATION = 'Basic gshja675DvhjsDgjaFVs4j';
+const END_POINT = 'https://22.objects.pages.academy/big-trip';
+
+export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts, Method, AUTHORIZATION, END_POINT};

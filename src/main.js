@@ -5,15 +5,21 @@ import OffersModel from './model/offers-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import EventsApiService from './service/events-api-service.js';
+import { AUTHORIZATION, END_POINT } from './const.js';
 
 const contentContainerElement = document.querySelector('.trip-events');
 const filterContainerElement = document.querySelector('.trip-controls__filters');
 const headerContainerElement = document.querySelector('.trip-main');
 
-const eventsModel = new EventsModel();
-const offersModel = new OffersModel();
-const destinationsModel = new DestinationsModel();
+const eventsApiService = new EventsApiService(END_POINT, AUTHORIZATION);
+
+const eventsModel = new EventsModel({eventsApiService});
+const offersModel = new OffersModel({eventsApiService});
+const destinationsModel = new DestinationsModel({eventsApiService});
 const filterModel = new FilterModel();
+
+eventsModel.init();
 
 const tripListPresenter = new TripListPresenter(contentContainerElement, headerContainerElement, eventsModel, offersModel, destinationsModel, filterModel);
 const headerPresenter = new HeaderPresenter(headerContainerElement, eventsModel, destinationsModel);
