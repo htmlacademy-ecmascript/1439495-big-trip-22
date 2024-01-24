@@ -2,17 +2,21 @@ import SortView from '../view/sort-view.js';
 import ListView from '../view/list-view.js';
 import { remove, render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
+import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import { filter, sort } from '../utils.js';
 import { FilterTypes, NoEventsTexts, SortTypes, UpdateType, UserAction } from '../const.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewPointPresenter from './new-point-presenter.js';
+import FailedLoadView from '../view/failed-load-view.js';
 
 export default class TripListPresenter {
   #tripListComponent = new ListView();
   #noEventsComponent = null;
   #sortComponent = null;
   #addBtnComponent = null;
+  #loadingComponent = new LoadingView();
+  #failedLoadComponent = new FailedLoadView();
   #listContainer = null;
   #btnContainer = null;
   #eventsModel = null;
@@ -21,6 +25,7 @@ export default class TripListPresenter {
   #filterModel = null;
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
+  #isLoading = true;
 
   constructor(listContainer, buttonContainer, eventsModel, offersModel, destinationsModel, filterModel) {
     this.#listContainer = listContainer;
@@ -49,9 +54,12 @@ export default class TripListPresenter {
   }
 
   init() {
+    this.#renderFullPointsBoard();
+  }
+
+  #renderAddBtnComponent() {
     this.#addBtnComponent = new NewEventBtnView({onBtnClick: this.#handleAddPointBtnClick});
     render(this.#addBtnComponent, this.#btnContainer);
-    this.#renderFullPointsBoard();
   }
 
   #renderSortList() {
@@ -59,10 +67,17 @@ export default class TripListPresenter {
     render(this.#sortComponent, this.#listContainer);
   }
 
-  #renderFullPointsBoard() {
+  #renderFullPointsBoard({resetSortType = false} = {}) {
+    if (this.#isLoading) {
+      render(this.#loadingComponent, this.#listContainer);
+      return;
+    }
     if (this.events.length === 0) {
       this.#renderNoEventsComponent();
       return;
+    }
+    if (resetSortType) {
+      this.#currentSortType = SortTypes.DAY;
     }
     this.#renderSortList();
     this.#renderPoints();
@@ -80,8 +95,14 @@ export default class TripListPresenter {
     render(this.#noEventsComponent, this.#listContainer);
   }
 
+  #renderErrorComponent() {
+    render(this.#failedLoadComponent, this.#listContainer);
+  }
+
   #clearFullBoard() {
     remove(this.#noEventsComponent);
+    remove(this.#loadingComponent);
+    remove(this.#failedLoadComponent);
     remove(this.#sortComponent);
     this.#clearPointsBoard();
   }
@@ -127,8 +148,18 @@ export default class TripListPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearFullBoard();
-        this.#renderFullPointsBoard();
+        this.#renderFullPointsBoard({resetSortType: true});
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderFullPointsBoard();
+        this.#renderAddBtnComponent();
+        break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderErrorComponent();
     }
   };
 
