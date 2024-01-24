@@ -14,16 +14,16 @@ const headerContainerElement = document.querySelector('.trip-main');
 
 const eventsApiService = new EventsApiService(END_POINT, AUTHORIZATION);
 
-const eventsModel = new EventsModel({eventsApiService});
 const offersModel = new OffersModel({eventsApiService});
 const destinationsModel = new DestinationsModel({eventsApiService});
+const eventsModel = new EventsModel({eventsApiService, offersModel, destinationsModel});
 const filterModel = new FilterModel();
-
-eventsModel.init();
 
 const tripListPresenter = new TripListPresenter(contentContainerElement, headerContainerElement, eventsModel, offersModel, destinationsModel, filterModel);
 const headerPresenter = new HeaderPresenter(headerContainerElement, eventsModel, destinationsModel);
 const filterPresenter = new FilterPresenter(filterContainerElement, eventsModel, filterModel);
+
+eventsModel.init();
 
 tripListPresenter.init();
 headerPresenter.init();

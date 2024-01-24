@@ -4,12 +4,15 @@ import Observable from '../framework/observable.js';
 
 export default class EventsModel extends Observable {
   #eventsApiService = null;
+  #offersModel = null;
+  #destinationsModel = null;
   #events = [];
 
-  constructor({eventsApiService}) {
+  constructor({eventsApiService, offersModel, destinationsModel}) {
     super();
     this.#eventsApiService = eventsApiService;
-
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
   }
 
   get events() {
@@ -18,13 +21,17 @@ export default class EventsModel extends Observable {
 
   async init() {
     try {
+      await Promise.all([
+        this.#offersModel.init(),
+        this.#destinationsModel.init()
+      ]);
       const events = await this.#eventsApiService.events;
       this.#events = events.map(this.#adaptToClient);
+      this._notify(UpdateType.INIT);
     } catch(error) {
       this.#events = [];
+      this._notify(UpdateType.ERROR);
     }
-
-    this._notify(UpdateType.INIT);
   }
 
   async updateEvent(updateType, updateItem) {

@@ -8,6 +8,7 @@ import { filter, sort } from '../utils.js';
 import { FilterTypes, NoEventsTexts, SortTypes, UpdateType, UserAction } from '../const.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewPointPresenter from './new-point-presenter.js';
+import FailedLoadView from '../view/failed-load-view.js';
 
 export default class TripListPresenter {
   #tripListComponent = new ListView();
@@ -15,6 +16,7 @@ export default class TripListPresenter {
   #sortComponent = null;
   #addBtnComponent = null;
   #loadingComponent = new LoadingView();
+  #failedLoadComponent = new FailedLoadView();
   #listContainer = null;
   #btnContainer = null;
   #eventsModel = null;
@@ -93,9 +95,14 @@ export default class TripListPresenter {
     render(this.#noEventsComponent, this.#listContainer);
   }
 
+  #renderErrorComponent() {
+    render(this.#failedLoadComponent, this.#listContainer);
+  }
+
   #clearFullBoard() {
     remove(this.#noEventsComponent);
     remove(this.#loadingComponent);
+    remove(this.#failedLoadComponent);
     remove(this.#sortComponent);
     this.#clearPointsBoard();
   }
@@ -149,6 +156,10 @@ export default class TripListPresenter {
         this.#renderFullPointsBoard();
         this.#renderAddBtnComponent();
         break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderErrorComponent();
     }
   };
 

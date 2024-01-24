@@ -1,5 +1,4 @@
 import Observable from '../framework/observable.js';
-//import { getMockDestinations } from '../mock/destination.js';
 
 export default class DestinationsModel extends Observable {
   #eventsApiService = null;
@@ -8,7 +7,9 @@ export default class DestinationsModel extends Observable {
   constructor({eventsApiService}) {
     super();
     this.#eventsApiService = eventsApiService;
+  }
 
+  init() {
     this.#eventsApiService.destinations.then((destinations) => {
       this.#destinations = destinations;
     });

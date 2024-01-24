@@ -1,5 +1,4 @@
 import Observable from '../framework/observable.js';
-//import { generateOffers } from '../mock/offer.js';
 
 export default class OffersModel extends Observable {
   #eventsApiService = null;
@@ -8,7 +7,9 @@ export default class OffersModel extends Observable {
   constructor({eventsApiService}) {
     super();
     this.#eventsApiService = eventsApiService;
+  }
 
+  init() {
     this.#eventsApiService.offers.then((offers) => {
       this.#offers = offers;
     });
