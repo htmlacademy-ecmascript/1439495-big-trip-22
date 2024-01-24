@@ -225,7 +225,7 @@ export default class AddPointView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     this._setState({
-      price: evt.target.value
+      price: parseInt(evt.target.value, 10)
     });
   };
 

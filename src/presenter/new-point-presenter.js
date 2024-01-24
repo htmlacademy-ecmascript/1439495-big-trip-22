@@ -1,6 +1,5 @@
 import { UpdateType, UserAction } from '../const';
 import { RenderPosition, remove, render } from '../framework/render';
-import { getRandomNumber } from '../utils';
 import AddPointView from '../view/add-point-view';
 
 
@@ -31,8 +30,7 @@ export default class NewPointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    //пока нет сервера пусть будет такое id
-    this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, {id: getRandomNumber(), ...point});
+    this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, point);
     this.#closeAddPointForm();
   };
 
