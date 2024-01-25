@@ -26,8 +26,8 @@ export default class TripListPresenter {
   #filterModel = null;
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
-  #newPointPresenter = null;
   #isLoading = true;
+  #newPointPresenter = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -110,7 +110,9 @@ export default class TripListPresenter {
     remove(this.#loadingComponent);
     remove(this.#failedLoadComponent);
     remove(this.#sortComponent);
-    this.#newPointPresenter.destroy();
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+    }
     this.#clearPointsBoard();
   }
 

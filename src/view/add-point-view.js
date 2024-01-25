@@ -212,7 +212,7 @@ export default class AddPointView extends AbstractStatefulView {
   #offersChangeHandler = (evt) => {
     if (evt.target.checked) {
       this._setState({
-        offers: [...this._state.offers, parseInt(evt.target.dataset.id, 10)]
+        offers: [...this._state.offers, evt.target.dataset.id]
       });
     }
   };
@@ -272,7 +272,7 @@ export default class AddPointView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formResetHandler);
     this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
 
