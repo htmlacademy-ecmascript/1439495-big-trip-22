@@ -44,7 +44,7 @@ function createAvaliableOffersTemplate(pointTypeOffers, offers) {
 }
 
 function createEditPointFormTemplate(point, allOffers, destinations) {
-  const {price, dateFrom, dateTo, destination, offers, type} = point;
+  const {price, dateFrom, dateTo, destination, offers, type, isSaving, isDeleting} = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
 
   const destinationInfo = destinations.find((item) => item.id === destination);
@@ -96,8 +96,8 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
@@ -139,7 +139,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   constructor({point, offers, destinations, onFormSubmit, onFormReset, onDeleteClick}) {
     super();
-    this._setState(point);
+    this._setState({...point, isSaving: false, isDeleting: false});
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
@@ -168,6 +168,8 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    delete this._state.isDeleting;
+    delete this._state.isSaving;
     this.#handleFormSubmit(this._state);
   };
 
@@ -201,7 +203,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     this._setState({
-      price: evt.target.value
+      price: parseInt(evt.target.value, 10)
     });
   };
 

@@ -88,7 +88,7 @@ function createDestinationSectionTemplate(destinationInfo) {
 }
 
 function createAddPointFormTemplate(point, allOffers, destinations) {
-  const {price, dateFrom, dateTo, destination, offers, type} = point;
+  const {price, dateFrom, dateTo, destination, offers, type, isSaving} = point;
 
   const destinationInfo = destinations.find((item) => item.id === destination);
 
@@ -139,7 +139,7 @@ function createAddPointFormTemplate(point, allOffers, destinations) {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
 
         </header>
@@ -164,7 +164,7 @@ export default class AddPointView extends AbstractStatefulView {
 
   constructor({offers, destinations, onFormSubmit, onFormReset}) {
     super();
-    this._setState(POINT_TEMPLATE);
+    this._setState({...POINT_TEMPLATE, isSaving: false});
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
@@ -192,6 +192,7 @@ export default class AddPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    delete this._state.isSaving;
     this.#handleFormSubmit(this._state);
   };
 
@@ -248,7 +249,8 @@ export default class AddPointView extends AbstractStatefulView {
         dateFormat: DateFormats.FULL_DATE,
         enableTime: true,
         'time_24hr': true,
-        defaultDate: this._state.dateFrom || 'today',
+        defaultDate: this._state.dateFrom || '',
+        minDate: 'today',
         maxDate: this._state.dateTo,
         onChange: this.#dateFromChangeHandler
       },

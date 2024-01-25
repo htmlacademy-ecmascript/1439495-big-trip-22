@@ -31,11 +31,30 @@ export default class NewPointPresenter {
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, point);
-    this.#closeAddPointForm();
   };
 
   #closeAddPointForm = () => {
     remove(this.#addPointFormComponent);
     this.#handleResetForm();
   };
+
+  setSaving() {
+    this.#addPointFormComponent.updateElement({
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#addPointFormComponent.updateElement({
+        isSaving: false
+      });
+    };
+
+    this.#addPointFormComponent.shake(resetFormState);
+  }
+
+  destroy() {
+    this.#closeAddPointForm();
+  }
 }
