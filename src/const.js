@@ -50,7 +50,7 @@ const Method = {
   DELETE: 'DELETE'
 };
 
-const AUTHORIZATION = 'Basic gshja675DvhjsDgjaFVs4j';
+const AUTHORIZATION = 'Basic gshjjsDgjaFVs4j';
 const END_POINT = 'https://22.objects.pages.academy/big-trip';
 
 const TimeLimit = {
