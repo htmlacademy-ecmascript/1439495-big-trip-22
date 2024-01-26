@@ -1,6 +1,5 @@
 import { UpdateType, UserAction } from '../const';
 import { RenderPosition, remove, render } from '../framework/render';
-import { getRandomNumber } from '../utils';
 import AddPointView from '../view/add-point-view';
 
 
@@ -31,13 +30,31 @@ export default class NewPointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    //пока нет сервера пусть будет такое id
-    this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, {id: getRandomNumber(), ...point});
-    this.#closeAddPointForm();
+    this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, point);
   };
 
   #closeAddPointForm = () => {
     remove(this.#addPointFormComponent);
     this.#handleResetForm();
   };
+
+  setSaving() {
+    this.#addPointFormComponent.updateElement({
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#addPointFormComponent.updateElement({
+        isSaving: false
+      });
+    };
+
+    this.#addPointFormComponent.shake(resetFormState);
+  }
+
+  destroy() {
+    this.#closeAddPointForm();
+  }
 }

@@ -45,10 +45,17 @@ const UpdateType = {
 
 const Method = {
   GET: 'GET',
-  PUT: 'PUT'
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
-const AUTHORIZATION = 'Basic gshja675DvhjsDgjaFVs4j';
+const AUTHORIZATION = 'Basic gshjjsDgjaFVs4j';
 const END_POINT = 'https://22.objects.pages.academy/big-trip';
 
-export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts, Method, AUTHORIZATION, END_POINT};
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
+export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts, Method, AUTHORIZATION, END_POINT, TimeLimit};

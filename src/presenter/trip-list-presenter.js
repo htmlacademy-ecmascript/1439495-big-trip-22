@@ -5,10 +5,11 @@ import EmptyListView from '../view/empty-list-view.js';
 import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
 import { filter, sort } from '../utils.js';
-import { FilterTypes, NoEventsTexts, SortTypes, UpdateType, UserAction } from '../const.js';
+import { FilterTypes, NoEventsTexts, SortTypes, TimeLimit, UpdateType, UserAction } from '../const.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import FailedLoadView from '../view/failed-load-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class TripListPresenter {
   #tripListComponent = new ListView();
@@ -26,6 +27,11 @@ export default class TripListPresenter {
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
   #isLoading = true;
+  #newPointPresenter = null;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor(listContainer, buttonContainer, eventsModel, offersModel, destinationsModel, filterModel) {
     this.#listContainer = listContainer;
@@ -104,6 +110,9 @@ export default class TripListPresenter {
     remove(this.#loadingComponent);
     remove(this.#failedLoadComponent);
     remove(this.#sortComponent);
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+    }
     this.#clearPointsBoard();
   }
 
@@ -123,18 +132,35 @@ export default class TripListPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this.#eventsModel.updateEvent(updateType, update);
+        this.#pointPresenters.get(update.id).setSaving();
+        try {
+          await this.#eventsModel.updateEvent(updateType, update);
+        } catch(error) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_EVENT:
-        this.#eventsModel.addEvent(updateType, update);
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#eventsModel.addEvent(updateType, update);
+        } catch(error) {
+          this.#newPointPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_EVENT:
-        this.#eventsModel.deleteEvent(updateType, update);
+        this.#pointPresenters.get(update.id).setDeleting();
+        try {
+          await this.#eventsModel.deleteEvent(updateType, update);
+        } catch(error) {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -180,7 +206,7 @@ export default class TripListPresenter {
 
   #handleAddPointBtnClick = () => {
     this.#addBtnComponent.element.disabled = true;
-    const newPointPresenter = new NewPointPresenter({
+    this.#newPointPresenter = new NewPointPresenter({
       container: this.#tripListComponent.element,
       offers: this.offers,
       destinations: this.destinations,
@@ -189,7 +215,7 @@ export default class TripListPresenter {
     });
     this.#currentSortType = SortTypes.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
-    newPointPresenter.init();
+    this.#newPointPresenter.init();
   };
 
   #handleNewEventFormClose = () => {
