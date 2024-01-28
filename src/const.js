@@ -51,7 +51,7 @@ const Method = {
 };
 
 const AUTHORIZATION = 'Basic gshjjsDgjaFVs4j';
-const END_POINT = 'https://22.objects.pages.academy/big-trip';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
