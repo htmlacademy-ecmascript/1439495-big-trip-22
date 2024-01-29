@@ -12,6 +12,7 @@ const Mode = {
 export default class PointPresenter {
   #pointComponent = null;
   #pointEditComponent = null;
+  #newPointFormComponent = null;
   #point = null;
   #pointsContainer = null;
   #offers = [];
@@ -20,12 +21,13 @@ export default class PointPresenter {
   #handleModeChange = null;
   #mode = Mode.DEFAULT;
 
-  constructor({pointsContainer, offers, destinations, onDataChange, onModeChange}) {
+  constructor({pointsContainer, offers, destinations, onDataChange, onModeChange, newPointFormComponent}) {
     this.#pointsContainer = pointsContainer;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#newPointFormComponent = newPointFormComponent;
   }
 
   init(point) {
@@ -105,6 +107,9 @@ export default class PointPresenter {
 
   #editBtnClickHandler = () => {
     this.#replacePointToEditForm();
+    if (this.#newPointFormComponent) {
+      this.#newPointFormComponent.destroy();
+    }
   };
 
   #favoriteBtnClickHandler = () => {
