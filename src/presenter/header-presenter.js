@@ -7,12 +7,14 @@ export default class HeaderPresenter {
   #container = null;
   #eventsModel = null;
   #destinationsModel = null;
+  #offersModel = null;
   #headerComponent = null;
 
-  constructor(container, eventsModel, destinationsModel) {
+  constructor(container, eventsModel, destinationsModel, offersModel) {
     this.#container = container;
     this.#eventsModel = eventsModel;
     this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
 
     this.#eventsModel.addObserver(this.#handleEventsChange);
   }
@@ -23,6 +25,10 @@ export default class HeaderPresenter {
 
   get destinations() {
     return this.#destinationsModel.destinations;
+  }
+
+  get offers() {
+    return this.#offersModel.offers;
   }
 
   init() {
@@ -42,7 +48,8 @@ export default class HeaderPresenter {
     }
     this.#headerComponent = new HeaderView({
       points: sort[SortTypes.DAY](this.events),
-      destinations: this.destinations
+      destinations: this.destinations,
+      offers: this.offers
     });
     render(this.#headerComponent, this.#container, RenderPosition.AFTERBEGIN);
   }

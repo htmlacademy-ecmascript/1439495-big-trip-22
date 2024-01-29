@@ -126,7 +126,8 @@ export default class TripListPresenter {
       offers: this.offers,
       destinations: this.destinations,
       onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange
+      onModeChange: this.#handleModeChange,
+      newPointFormComponent: this.#newPointPresenter
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -205,7 +206,6 @@ export default class TripListPresenter {
   };
 
   #handleAddPointBtnClick = () => {
-    this.#addBtnComponent.element.disabled = true;
     this.#newPointPresenter = new NewPointPresenter({
       container: this.#tripListComponent.element,
       offers: this.offers,
@@ -215,7 +215,9 @@ export default class TripListPresenter {
     });
     this.#currentSortType = SortTypes.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+    this.#handleModeChange();
     this.#newPointPresenter.init();
+    this.#addBtnComponent.element.disabled = true;
   };
 
   #handleNewEventFormClose = () => {

@@ -20,7 +20,7 @@ const eventsModel = new EventsModel({eventsApiService, offersModel, destinations
 const filterModel = new FilterModel();
 
 const tripListPresenter = new TripListPresenter(contentContainerElement, headerContainerElement, eventsModel, offersModel, destinationsModel, filterModel);
-const headerPresenter = new HeaderPresenter(headerContainerElement, eventsModel, destinationsModel);
+const headerPresenter = new HeaderPresenter(headerContainerElement, eventsModel, destinationsModel, offersModel);
 const filterPresenter = new FilterPresenter(filterContainerElement, eventsModel, filterModel);
 
 eventsModel.init();
