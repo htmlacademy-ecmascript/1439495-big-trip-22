@@ -1,10 +1,10 @@
 import SortView from '../view/sort-view.js';
 import ListView from '../view/list-view.js';
-import { remove, render } from '../framework/render.js';
+import { RenderPosition, remove, render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
 import LoadingView from '../view/loading-view.js';
 import PointPresenter from './point-presenter.js';
-import { filter, sort } from '../utils.js';
+import { filter, sort, isEscapeKey } from '../utils.js';
 import { FilterTypes, NoEventsTexts, SortTypes, TimeLimit, UpdateType, UserAction } from '../const.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewPointPresenter from './new-point-presenter.js';
@@ -27,6 +27,7 @@ export default class TripListPresenter {
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
   #isLoading = true;
+  #isAddingNewEvent = false;
   #newPointPresenter = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -70,10 +71,11 @@ export default class TripListPresenter {
 
   #renderSortList() {
     this.#sortComponent = new SortView({onSortChange: this.#handleSortChange, currentSortType: this.#currentSortType});
-    render(this.#sortComponent, this.#listContainer);
+    render(this.#sortComponent, this.#listContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderFullPointsBoard({resetSortType = false} = {}) {
+    render(this.#tripListComponent, this.#listContainer);
     if (this.#isLoading) {
       render(this.#loadingComponent, this.#listContainer);
       return;
@@ -90,7 +92,6 @@ export default class TripListPresenter {
   }
 
   #renderPoints() {
-    render(this.#tripListComponent, this.#listContainer);
     for (let i = 0; i < this.events.length; i++) {
       this.#renderPoint(this.events[i]);
     }
@@ -110,7 +111,7 @@ export default class TripListPresenter {
     remove(this.#loadingComponent);
     remove(this.#failedLoadComponent);
     remove(this.#sortComponent);
-    if (this.#newPointPresenter) {
+    if (!this.#isAddingNewEvent && this.#newPointPresenter) {
       this.#newPointPresenter.destroy();
     }
     this.#clearPointsBoard();
@@ -146,10 +147,12 @@ export default class TripListPresenter {
         break;
       case UserAction.ADD_EVENT:
         this.#newPointPresenter.setSaving();
+        this.#isAddingNewEvent = false;
         try {
           await this.#eventsModel.addEvent(updateType, update);
         } catch(error) {
           this.#newPointPresenter.setAborting();
+          this.#isAddingNewEvent = true;
         }
         break;
       case UserAction.DELETE_EVENT:
@@ -206,6 +209,7 @@ export default class TripListPresenter {
   };
 
   #handleAddPointBtnClick = () => {
+    this.#isAddingNewEvent = true;
     this.#newPointPresenter = new NewPointPresenter({
       container: this.#tripListComponent.element,
       offers: this.offers,
@@ -218,10 +222,25 @@ export default class TripListPresenter {
     this.#handleModeChange();
     this.#newPointPresenter.init();
     this.#addBtnComponent.element.disabled = true;
+    document.addEventListener('keydown', this.#escapeKeydownHandler);
+    remove(this.#noEventsComponent);
+  };
+
+  #escapeKeydownHandler = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      this.#newPointPresenter.destroy();
+      document.removeEventListener('keydown', this.#escapeKeydownHandler);
+    }
   };
 
   #handleNewEventFormClose = () => {
     this.#addBtnComponent.element.disabled = false;
+    document.removeEventListener('keydown', this.#escapeKeydownHandler);
+    this.#isAddingNewEvent = false;
+    if (this.events.length === 0) {
+      this.#renderNoEventsComponent();
+    }
   };
 
 }

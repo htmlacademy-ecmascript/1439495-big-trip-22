@@ -35,10 +35,6 @@ export default class HeaderPresenter {
     this.#renderHeaderList();
   }
 
-  #handleEventsChange = () => {
-    this.#renderHeaderList();
-  };
-
   #renderHeaderList() {
     if (this.#headerComponent) {
       remove(this.#headerComponent);
@@ -53,4 +49,9 @@ export default class HeaderPresenter {
     });
     render(this.#headerComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
+
+  #handleEventsChange = () => {
+    this.#renderHeaderList();
+  };
+
 }

@@ -1,5 +1,8 @@
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
+const AUTHORIZATION = 'Basic 15gshjsD5jaFVs4j';
+const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
+
 const DateFormats = {
   MONTH: 'MMM D',
   TIME: 'HH:mm',
@@ -49,9 +52,6 @@ const Method = {
   POST: 'POST',
   DELETE: 'DELETE'
 };
-
-const AUTHORIZATION = 'Basic gshjjsDgjaFVs4j';
-const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,

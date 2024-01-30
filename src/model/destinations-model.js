@@ -9,13 +9,14 @@ export default class DestinationsModel extends Observable {
     this.#eventsApiService = eventsApiService;
   }
 
-  init() {
-    this.#eventsApiService.destinations.then((destinations) => {
-      this.#destinations = destinations;
-    });
-  }
-
   get destinations() {
     return this.#destinations;
   }
+
+  init() {
+    this.#eventsApiService.destinations.then((destinations) => {
+      this.#destinations = destinations;
+    }).catch((err) => err);
+  }
+
 }

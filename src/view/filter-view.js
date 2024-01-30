@@ -44,10 +44,6 @@ export default class FilterView extends AbstractView {
     return createFilterTemplate(this.#generateFilters(), this.#currentFilter);
   }
 
-  #changeFilterHandler = (evt) => {
-    this.#handleFilterChange(evt.target.value);
-  };
-
   #generateFilters() {
     return Object.entries(filter).map(
       ([filterType, filterPoints]) => ({
@@ -56,4 +52,8 @@ export default class FilterView extends AbstractView {
       }),
     );
   }
+
+  #changeFilterHandler = (evt) => {
+    this.#handleFilterChange(evt.target.value);
+  };
 }
