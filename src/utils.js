@@ -16,7 +16,7 @@ function formatDate(date, dateFormat) {
 }
 
 function calculateDuration(startDate, endDate, inMilliseconds = false) {
-  const timeDuration = dayjs(endDate).diff(dayjs(startDate));
+  const timeDuration = dayjs(endDate).diff(startDate);
   if (inMilliseconds) {
     return timeDuration;
   }
@@ -27,7 +27,8 @@ function calculateDuration(startDate, endDate, inMilliseconds = false) {
   if (timeDuration < MS_IN_HOUR) {
     timeFormat = 'mm[M]';
   }
-  return dayjs.duration(timeDuration).format(timeFormat);
+
+  return Math.floor(dayjs.duration(timeDuration).asDays()) > 29 ? `${Math.floor(dayjs.duration(timeDuration).asDays())}D ${dayjs.duration(timeDuration).format('HH[H] mm[M]')}` : dayjs.duration(timeDuration).format(timeFormat);
 }
 
 const filter = {
